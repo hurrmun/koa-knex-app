@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for simple koa app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hurrmun/koa-knex-app.git"
+  },
+  "author": "Herman Loh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hurrmun/koa-knex-app/issues"
+  },
+  "homepage": "https://github.com/hurrmun/koa-knex-app#readme"
+}

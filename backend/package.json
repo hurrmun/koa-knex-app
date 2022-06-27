@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "backend for simple koa app",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,20 @@
   "bugs": {
     "url": "https://github.com/hurrmun/koa-knex-app/issues"
   },
-  "homepage": "https://github.com/hurrmun/koa-knex-app#readme"
+  "homepage": "https://github.com/hurrmun/koa-knex-app#readme",
+  "dependencies": {
+    "knex": "^2.1.0",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.1.1",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.7",
+    "@types/koa-router": "^7.4.4",
+    "@types/node": "^18.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
+  }
 }

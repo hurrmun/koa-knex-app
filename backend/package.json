@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hurrmun/koa-knex-app#readme",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "knex": "^2.1.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",

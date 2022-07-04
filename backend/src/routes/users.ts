@@ -3,7 +3,7 @@ import { createUser, loginUser } from '../controllers/users';
 import auth from '../middleware/auth';
 
 const router = new Router({
-  prefix: '/users',
+  prefix: '/user',
 });
 
 router.post('/create', createUser);

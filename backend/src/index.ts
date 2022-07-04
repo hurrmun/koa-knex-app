@@ -8,6 +8,7 @@ import { config } from './config';
 //* Import Routes
 import healthcheckRoutes from './routes/healthcheck';
 import testRoutes from './routes/protectedcheck';
+import userRoutes from './routes/users';
 
 //* Config
 const app = new Koa();
@@ -18,6 +19,7 @@ const apiRoutes = new Router({ prefix: '/api' });
 
 apiRoutes.use(healthcheckRoutes.routes()); //? '/healthcheck/...'
 apiRoutes.use(testRoutes.routes()); //? '/test/...'
+apiRoutes.use(userRoutes.routes()); //? '/user/...'
 
 //* Middleware
 app
@@ -34,7 +36,9 @@ app
 //* Listener
 const server = app
   .listen(PORT, async () => {
-    console.log(`server is listening on :${PORT}`);
+    console.log(
+      `server is listening on: ${PORT}. Go to http://localhost:${PORT}`
+    );
   })
   .on('error', (err) => {
     console.error(err);

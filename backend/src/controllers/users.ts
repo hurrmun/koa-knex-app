@@ -1,11 +1,15 @@
 import Koa from 'koa';
+// import bcrypt from 'bcrypt';
+import { dbCreateUser } from '../services/dbaccess';
 
 export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {
-    await next();
+    //* Validate the request body
+
+    dbCreateUser(ctx.request.body);
+    // console.log('request body', ctx.request.body);
     ctx.body = {
-      status: 'success',
-      data: 'is protected',
+      message: 'hello',
     };
   } catch (error) {
     console.error(error);

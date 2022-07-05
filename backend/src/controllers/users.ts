@@ -5,10 +5,27 @@ import {
   dbCheckUserByEmail,
   dbCheckUserByUsername,
 } from '../services/dbaccess';
+import { UserAccount } from '../utils/validation';
+import { validate } from 'class-validator';
 
 export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {
+    let newUser = new UserAccount();
+    newUser.email = ctx.request.body.email;
+    newUser.username = ctx.request.body.username;
+    newUser.password = ctx.request.body.password;
+
     //* Validate the request body
+    const validationOptions = {};
+    const errors = await validate(newUser, validationOptions);
+    if (errors.length > 0) {
+      ctx.status = 400;
+      ctx.body = {
+        status: 'error',
+        data: errors,
+      };
+      return ctx;
+    }
 
     //* Check id existing user already exists
     const userByEmail = await dbCheckUserByEmail(ctx.request.body.email);

@@ -5,11 +5,10 @@ import { dbCreateUser } from '../services/dbaccess';
 export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {
     //* Validate the request body
-
+    console.log('request body', ctx.request.body);
     dbCreateUser(ctx.request.body);
-    // console.log('request body', ctx.request.body);
     ctx.body = {
-      message: 'hello',
+      message: 'created',
     };
   } catch (error) {
     console.error(error);

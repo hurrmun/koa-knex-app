@@ -7,6 +7,15 @@ export const dbCreateUser = async ({
   email,
   password,
 }: IUserAccount) => {
-  const hashed_password = bcrypt.hash(password, 20);
-  knex('users').insert({ username, email, hashed_password });
+  try {
+    const hashed_password = await bcrypt.hash(password, 10);
+    return knex('users').insert({
+      username: username,
+      email: email,
+      password: hashed_password,
+    });
+  } catch (error) {
+    console.error(error);
+    process.exit();
+  }
 };

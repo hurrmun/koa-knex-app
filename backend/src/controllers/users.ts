@@ -1,5 +1,5 @@
 import Koa from 'koa';
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import {
   dbCreateUser,
   dbCheckUserByEmail,
@@ -60,7 +60,6 @@ export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
 
     //* return body
     ctx.body = { token: accessToken };
-    console.log(ctx.body);
   } catch (error) {
     console.error(error);
   }
@@ -68,10 +67,42 @@ export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
 
 export const loginUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {
-    await next();
+    //* check if email exists in db
+    const userByEmail = await dbCheckUserByEmail(ctx.request.body.email);
+    if (!userByEmail) {
+      ctx.body = {
+        message: 'account does not exist',
+      };
+      return ctx.throw(400, 'account does not exist');
+    }
+
+    //* check if password is matching
+    const isPasswordMatching = await bcrypt.compare(
+      ctx.request.body.password,
+      userByEmail.password
+    );
+
+    if (!isPasswordMatching) {
+      ctx.body = {
+        message: 'incorrect password',
+      };
+      return ctx.throw(400, 'incorrect password');
+    }
+
+    //* create token for login
+    const accessToken = await auth.getToken(
+      userByEmail.id,
+      userByEmail.email,
+      userByEmail.username
+    );
+
     ctx.body = {
-      status: 'success',
-      data: 'is protected',
+      user: {
+        id: userByEmail.id,
+        email: userByEmail.email,
+        username: userByEmail.username,
+      },
+      token: accessToken,
     };
   } catch (error) {
     console.error(error);

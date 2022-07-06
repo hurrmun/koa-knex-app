@@ -6,7 +6,7 @@ const router = new Router({
   prefix: '/user',
 });
 
-router.post('/create', createUser);
-router.post('/login', loginUser, auth.protect);
+router.post('/register', createUser);
+router.post('/login', loginUser, auth.authenticateToken);
 
 export default router;

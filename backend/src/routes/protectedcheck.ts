@@ -6,6 +6,6 @@ const router = new Router({
   prefix: '/protected',
 });
 
-router.get('/test', checkAuth, auth.protect);
+router.get('/test', checkAuth, auth.authenticateToken);
 
 export default router;

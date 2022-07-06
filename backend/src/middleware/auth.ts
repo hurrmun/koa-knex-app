@@ -10,10 +10,21 @@ export default {
     try {
       const authHeader = ctx.request.headers['authorization'];
       const token = authHeader && authHeader.split(' ')[1];
-      if (token == null) return ctx.throw(401, 'token not found');
+
+      if (!token) {
+        ctx.body = {
+          message: 'token not found',
+        };
+        return ctx.throw(401, 'token not found');
+      }
 
       jwt.verify(token, privateKey, (err: any, user: any) => {
-        if (err) return ctx.throw(403, 'token is not valid', { token: token });
+        if (err) {
+          ctx.body = {
+            message: 'token is not valid',
+          };
+          return ctx.throw(403, 'token is not valid', { token: token });
+        }
         ctx.user = user;
         next();
       });

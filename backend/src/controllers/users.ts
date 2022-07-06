@@ -7,6 +7,7 @@ import {
 } from '../services/dbaccess';
 import { UserAccount } from '../utils/validation';
 import { validate } from 'class-validator';
+import auth from '../middleware/auth';
 
 export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {
@@ -28,12 +29,10 @@ export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
     }
 
     //* Check id existing user already exists
-    const userByEmail = await dbCheckUserByEmail(ctx.request.body.email);
-    const userByUsername = await dbCheckUserByUsername(
-      ctx.request.body.username
-    );
+    const userByEmail = await dbCheckUserByEmail(newUser.email);
+    const userByUsername = await dbCheckUserByUsername(newUser.username);
 
-    if (ctx.request.body.username === userByUsername?.username) {
+    if (newUser.username === userByUsername?.username) {
       ctx.body = {
         message: 'username already exists',
       };
@@ -48,14 +47,20 @@ export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
 
     // console.log('request body', ctx.request.body);
     //* Add Account into DB
-    dbCreateUser(ctx.request.body);
+    await dbCreateUser(ctx.request.body);
+
+    const registeredUser = await dbCheckUserByEmail(newUser.email);
 
     //* Create token
+    const accessToken = await auth.getToken(
+      registeredUser.id,
+      registeredUser.email,
+      registeredUser.username
+    );
 
     //* return body
-    ctx.body = {
-      message: 'created',
-    };
+    ctx.body = { token: accessToken };
+    console.log(ctx.body);
   } catch (error) {
     console.error(error);
   }

@@ -1,6 +1,10 @@
 import bcrypt from 'bcrypt';
 import knex from '../db/database';
-import { IUserAccount } from '../types/interface';
+import {
+  IFullUserProfile,
+  IUserAccount,
+  IUserProfile,
+} from '../types/interface';
 
 export const dbCreateUser = async ({
   username,
@@ -20,7 +24,9 @@ export const dbCreateUser = async ({
   }
 };
 
-export const dbCheckUserByEmail = async (email: string) => {
+export const dbCheckUserByEmail = async (
+  email: string
+): Promise<IFullUserProfile> => {
   try {
     const getUser = await knex('users').where('email', email);
     const user = getUser[0];

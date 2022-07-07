@@ -1,12 +1,13 @@
 import Router from 'koa-router';
-import { createUser, loginUser } from '../controllers/users';
-import auth from '../middleware/auth';
+import { createUser, loginUser, token } from '../controllers/users';
+import { authenticateToken, verifyRefreshToken } from '../middleware/auth';
 
 const router = new Router({
   prefix: '/user',
 });
 
 router.post('/register', createUser);
-router.post('/login', loginUser, auth.authenticateToken);
+router.post('/login', loginUser, authenticateToken);
+router.post('/token', token, verifyRefreshToken);
 
 export default router;

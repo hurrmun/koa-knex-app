@@ -7,7 +7,28 @@ import {
 } from '../services/dbaccess';
 import { UserAccount } from '../utils/validation';
 import { validate } from 'class-validator';
-import auth from '../middleware/auth';
+import { generateAccessToken, generateRefreshToken } from '../middleware/auth';
+
+//! Do not do this in production! Use smt like Redis Cache or DB
+let refreshTokens: any[] = [];
+
+export const token = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
+  const refreshToken = ctx.request.body.token;
+  if (refreshToken === null) {
+    ctx.body = {
+      message: 'no refresh token given',
+    };
+    return ctx.throw(401, 'no refresh token given');
+  }
+  if (!refreshTokens.includes(refreshToken)) {
+    ctx.body = {
+      message: 'refresh token not found',
+    };
+    return ctx.throw(403, 'refresh token not found');
+  }
+  //* Verify Refresh Token
+  next();
+};
 
 export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {
@@ -52,14 +73,20 @@ export const createUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
     const registeredUser = await dbCheckUserByEmail(newUser.email);
 
     //* Create token
-    const accessToken = await auth.getToken(
-      registeredUser.id,
-      registeredUser.email,
-      registeredUser.username
-    );
+    const accessToken = await generateAccessToken(registeredUser);
+    const refreshToken = await generateRefreshToken(registeredUser);
+    refreshTokens.push(refreshToken);
 
     //* return body
-    ctx.body = { token: accessToken };
+    ctx.body = {
+      user: {
+        user_id: registeredUser.id,
+        email: registeredUser.email,
+        username: registeredUser.username,
+      },
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   } catch (error) {
     console.error(error);
   }
@@ -90,19 +117,18 @@ export const loginUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
     }
 
     //* create token for login
-    const accessToken = await auth.getToken(
-      userByEmail.id,
-      userByEmail.email,
-      userByEmail.username
-    );
+    const accessToken = await generateAccessToken(userByEmail);
+    const refreshToken = await generateRefreshToken(userByEmail);
+    refreshTokens.push(refreshToken);
 
     ctx.body = {
       user: {
-        id: userByEmail.id,
+        user_id: userByEmail.id,
         email: userByEmail.email,
         username: userByEmail.username,
       },
-      token: accessToken,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   } catch (error) {
     console.error(error);

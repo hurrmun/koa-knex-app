@@ -1,6 +1,4 @@
 import Koa from 'koa';
-import jwt from 'jsonwebtoken';
-import auth from '../middleware/auth';
 
 export const checkAuth = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
   try {

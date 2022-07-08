@@ -134,3 +134,15 @@ export const loginUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
     console.error(error);
   }
 };
+
+export const logoutUser = async (ctx: Koa.DefaultContext, next: Koa.Next) => {
+  try {
+    //! Do not do this in production! Use smt like Redis Cache or DB
+    refreshTokens = refreshTokens.filter(
+      (token) => token !== ctx.request.body.token
+    );
+    ctx.status = 204;
+  } catch (error) {
+    console.error(error);
+  }
+};
